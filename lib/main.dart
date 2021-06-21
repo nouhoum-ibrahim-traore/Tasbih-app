@@ -1,3 +1,4 @@
+import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +25,13 @@ class NotreAppState extends State<NotreApp> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return MaterialApp(home: PageDaccueil(title: "Compteur"));
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: PageDaccueil(title: "Compteur"));
   }
 }
 
-class PageDaccueil extends StatelessWidget {
+class PageDaccueil extends StatefulWidget {
   static var _audioPlayer = AudioPlayer();
 
   final String title;
@@ -37,11 +40,24 @@ class PageDaccueil extends StatelessWidget {
   const PageDaccueil({Key key, this.title}) : super(key: key);
 
   @override
+  _PageDaccueilState createState() => _PageDaccueilState();
+}
+
+class _PageDaccueilState extends State<PageDaccueil> {
+  AudioPlayer audioPlayer = AudioPlayer();
+
+  AudioPlayerState audioPlayerState = AudioPlayerState.PAUSED;
+
+  AudioCache audioCache;
+
+  String filePath = 'mp3Test.mp3';
+
+  @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
       ),
       floatingActionButton: Align(
         alignment: Alignment.bottomCenter,
@@ -66,7 +82,7 @@ class PageDaccueil extends StatelessWidget {
                   Expanded(
                     child: TextField(
                       keyboardType: TextInputType.number,
-                      controller: textEditingController,
+                      controller: PageDaccueil.textEditingController,
                       decoration: InputDecoration(hintText: 'Entrer la limite'),
                     ),
                   ),
@@ -74,7 +90,8 @@ class PageDaccueil extends StatelessWidget {
                       color: Colors.blue,
                       child: Text('Valider'),
                       onPressed: () => context.read<Compteur>().updateLimite(
-                          int.parse(textEditingController.text.toString()))),
+                          int.parse(PageDaccueil.textEditingController.text
+                              .toString()))),
                 ],
               ),
               SizedBox(
@@ -95,20 +112,9 @@ class PageDaccueil extends StatelessWidget {
                 height: 10,
               ),
               ElevatedButton(
-                  // onPressed: () {
-                  //   context.read<Compteur>().reset();
-                  //   playLocalAsset();
-                  // },
-                  onPressed: () async {
-                    //String filePath = await FilePicker.getFilePath();
-
-                    await _audioPlayer.play("mp3Test.mp3", isLocal: true);
-
-                    // if(status == 1){
-                    //   setState(() {
-                    //     isPlaying = true;
-                    //   });
-                    // }
+                  onPressed: () {
+                    context.read<Compteur>().reset();
+                    // playLocalAsset();
                   },
                   child: Icon(Icons.refresh),
                   style: ButtonStyle(
