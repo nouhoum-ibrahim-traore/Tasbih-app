@@ -37,20 +37,35 @@ class PageDaccueil extends StatefulWidget {
   final String title;
   static var textEditingController = TextEditingController();
 
+  static AudioPlayer audioPlayer = AudioPlayer();
+  static AudioPlayerState audioPlayerState = AudioPlayerState.PAUSED;
+  static String filePath = 'mp3Test.mp3';
+  static AudioCache audioCache;
+
   const PageDaccueil({Key key, this.title}) : super(key: key);
 
   @override
   _PageDaccueilState createState() => _PageDaccueilState();
+
+  static playMusic() async {
+    await PageDaccueil.audioCache.play(PageDaccueil.filePath);
+  }
 }
 
 class _PageDaccueilState extends State<PageDaccueil> {
-  AudioPlayer audioPlayer = AudioPlayer();
+  @override
+  void initState() {
+    super.initState();
 
-  AudioPlayerState audioPlayerState = AudioPlayerState.PAUSED;
+    PageDaccueil.audioPlayer = AudioPlayer();
+    PageDaccueil.audioCache = AudioCache(fixedPlayer: PageDaccueil.audioPlayer);
 
-  AudioCache audioCache;
-
-  String filePath = 'mp3Test.mp3';
+    PageDaccueil.audioPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
+      setState(() {
+        PageDaccueil.audioPlayerState = s;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +82,9 @@ class _PageDaccueilState extends State<PageDaccueil> {
           child: FloatingActionButton(
             backgroundColor: context.watch<Compteur>().getCouleur,
             child: Icon(Icons.add),
-            onPressed: () => context.read<Compteur>().incrementer(),
+            onPressed: () {
+              context.read<Compteur>().incrementer();
+            },
           ),
         ),
       ),
@@ -114,7 +131,6 @@ class _PageDaccueilState extends State<PageDaccueil> {
               ElevatedButton(
                   onPressed: () {
                     context.read<Compteur>().reset();
-                    // playLocalAsset();
                   },
                   child: Icon(Icons.refresh),
                   style: ButtonStyle(
@@ -128,10 +144,15 @@ class _PageDaccueilState extends State<PageDaccueil> {
     throw UnimplementedError();
   }
 
-  Future<AudioPlayer> playLocalAsset() async {
-    AudioCache cache = new AudioCache();
-    //At the next line, DO NOT pass the entire reference such as assets/yes.mp3. This will not work.
-    //Just pass the file name only.
-    return await cache.play("mp3Test.mp3");
+  @override
+  void dispose() {
+    PageDaccueil.audioPlayer.release();
+    PageDaccueil.audioPlayer.dispose();
+    PageDaccueil.audioCache.clearCache();
+    super.dispose();
+  }
+
+  pauseMusic() async {
+    await PageDaccueil.audioPlayer.pause();
   }
 }

@@ -1,3 +1,4 @@
+import 'package:c1_flutter_tasbih_provider/main.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class Compteur with ChangeNotifier, DiagnosticableTreeMixin {
     if (nombreDeClics == limite) {
       couleur = Colors.yellowAccent;
       nombreDeClics = 0;
+      PageDaccueil.playMusic();
     }
     notifyListeners();
   }
