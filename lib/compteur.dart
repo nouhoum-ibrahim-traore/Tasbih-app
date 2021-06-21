@@ -19,7 +19,7 @@ class Compteur with ChangeNotifier, DiagnosticableTreeMixin {
 
     ;
     if (nombreDeClics == limite) {
-      couleur = Colors.yellowAccent;
+      //couleur = Colors.yellowAccent;
       nombreDeClics = 0;
       PageDaccueil.playMusic();
     }

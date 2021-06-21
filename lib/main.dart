@@ -26,8 +26,7 @@ class NotreAppState extends State<NotreApp> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: PageDaccueil(title: "Compteur"));
+        debugShowCheckedModeBanner: false, home: PageDaccueil(title: "Tasbih"));
   }
 }
 
@@ -39,7 +38,8 @@ class PageDaccueil extends StatefulWidget {
 
   static AudioPlayer audioPlayer = AudioPlayer();
   static AudioPlayerState audioPlayerState = AudioPlayerState.PAUSED;
-  static String filePath = 'mp3Test.mp3';
+  //static String filePath = 'mp3Test.mp3';
+  static String filePath = 'doorbellsingle.wav';
   static AudioCache audioCache;
 
   const PageDaccueil({Key key, this.title}) : super(key: key);
@@ -72,7 +72,7 @@ class _PageDaccueilState extends State<PageDaccueil> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Center(child: Text(widget.title)),
       ),
       floatingActionButton: Align(
         alignment: Alignment.bottomCenter,
@@ -114,7 +114,7 @@ class _PageDaccueilState extends State<PageDaccueil> {
               SizedBox(
                 height: 60,
               ),
-              Text('Le nombre de fois que vous avez cliqué: ',
+              Text('Nombre de clic: ',
                   style: TextStyle(
                     fontSize: 17,
                   )),
